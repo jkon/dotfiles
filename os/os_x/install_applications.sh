@@ -6,12 +6,21 @@ cd "$(dirname "${BASH_SOURCE}")" && source "../utils.sh"
 # https://github.com/Homebrew/homebrew
 
 declare -r -a HOMEBREW_FORMULAE=(
+    "coreutils"
+    "findutils"
+    "phantomjs"
     "bash"
     "caskroom/cask/brew-cask"
     "ffmpeg"
     "git"
     "imagemagick --with-webp"
+    "mackup"
     "tmux"
+    "trash"
+    "rename"
+    "python"
+    "ack"
+    "hub"
     "vim --override-system-vi"
     "zopfli"
 )
@@ -29,34 +38,44 @@ declare -r -a HOMEBREW_VERSIONS_FORMULAE=(
 declare -r -a HOMEBREW_CASKS=(
     "android-file-transfer"
     "atom"
-    "chromium"
     "dropbox"
-    "firefox"
     "flash"
-    "google-chrome"
     "imageoptim"
-    "libreoffice"
     "licecap"
     "lisanet-gimp"
     "macvim"
-    "opera"
-    "spectacle"
-    "the-unarchiver"
-    "transmission"
-    "virtualbox"
     "vlc"
+    "alfred"
+    "bittorrent-sync"
+    "skype"
+    "hazel"
+    "1password"
+    "iterm2"
+    "quicklook-json"
+    "qlcolorcode"
+    "qlmarkdown"
+    "transmission"
+    "bettertouchtool"
+    "teamviewer"
+    "macupdate-desktop"
+    "sourcetree"
+    "qlprettypatch"
+    "vagrant"
+    "keka"
+    "flux"
+    "seil"
+    "silverlight"
+    "spotify"
 )
+
+//TODO: Atom Packages
 
 # Homebrew Alternate Casks
 # https://github.com/caskroom/homebrew-versions
 
 declare -r -a HOMEBREW_ALTERNATE_CASKS=(
-    "firefox-nightly"
     "firefoxdeveloperedition"
-    "google-chrome-canary"
-    "opera-beta"
-    "opera-developer"
-    "webkit-nightly"
+    "google-chrome-beta"
 )
 
 # Webfont tools
@@ -67,6 +86,17 @@ declare -r -a WEBFONT_TOOLS=(
     "sfnt2woff-zopfli"
     "woff2"
 )
+
+# Fonts
+
+declare -r -a FONTS=(
+    "font-m-plus"
+    "font-clear-sans"
+    "font-source-code-pro"
+    "font-roboto"
+    "font-fontawesome"
+)
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -144,6 +174,10 @@ main() {
 
         brew_tap "bramstein/webfonttools" \
             && brew_install "WEBFONT_TOOLS[@]"
+        printf "\n"
+
+        brew_tap "caskroom/fonts" \
+            && brew_install "FONTS[@]"
         printf "\n"
 
         execute "brew cleanup" "brew (cleanup)"

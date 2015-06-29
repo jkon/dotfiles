@@ -19,22 +19,6 @@ set_chrome_preferences() {
 
 }
 
-# ----------------------------------------------------------------------
-# | Chrome Canary                                                      |
-# ----------------------------------------------------------------------
-
-set_chrome_canary_preferences() {
-
-    execute 'defaults write com.google.Chrome.canary AppleEnableSwipeNavigateWithScrolls -bool false' \
-        'Disable backswipe'
-
-    execute 'defaults write com.google.Chrome.canary PMPrintingExpandedStateForPrint2 -bool true' \
-        'Expand print dialog by default'
-
-    execute 'defaults write com.google.Chrome.canary DisablePrintPreview -bool true' \
-        'Use system-native print preview dialog'
-
-}
 
 # ----------------------------------------------------------------------
 # | Dashboard                                                          |
@@ -73,9 +57,6 @@ set_dock_preferences() {
 
     execute 'defaults write com.apple.dock mru-spaces -bool false' \
         'Do not automatically rearrange spaces based on most recent use'
-
-    execute 'defaults write com.apple.dock persistent-apps -array' \
-        'Wipe all app icons'
 
     execute 'defaults write com.apple.dock show-process-indicators -bool true' \
         'Show indicator lights for open applications'
@@ -122,8 +103,8 @@ set_finder_preferences() {
         'Use list view in all Finder windows by default'
 
     execute 'defaults write com.apple.finder NewWindowTarget -string "PfDe" &&
-             defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}/Desktop/"' \
-        'Set "Desktop" as the default location for new Finder windows'
+             defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}/"' \
+        'Set "Home" as the default location for new Finder windows'
 
     execute 'defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool true &&
              defaults write com.apple.finder ShowHardDrivesOnDesktop -bool true &&
@@ -201,18 +182,6 @@ set_keyboard_preferences() {
 
 set_language_and_region_preferences() {
 
-    execute 'defaults write NSGlobalDomain AppleLanguages -array "en" "ro"' \
-        'Set language'
-
-    execute 'defaults write NSGlobalDomain AppleLocale -string "en_RO@currency=EUR"' \
-        'Set locale'
-
-    execute 'defaults write NSGlobalDomain AppleMeasurementUnits -string "Centimeters"' \
-        'Set measurement units'
-
-    execute 'sudo systemsetup -settimezone "Europe/Bucharest"' \
-        'Set timezone'
-
     execute 'defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false' \
         'Disable auto-correct'
 
@@ -238,9 +207,6 @@ set_maps_preferences() {
 # ----------------------------------------------------------------------
 
 set_safari_preferences() {
-
-    execute 'defaults write com.apple.Safari AutoOpenSafeDownloads -bool false' \
-        'Disable opening "safe" files automatically'
 
     execute 'defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2BackspaceKeyNavigationEnabled -bool true' \
         'Set backspace key to go to the previous page in history'
@@ -362,12 +328,6 @@ set_trackpad_preferences() {
              defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1' \
         'Enable "Tap to click"'
 
-    execute 'defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick -bool true &&
-             defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true &&
-             defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadCornerSecondaryClick -int 0 &&
-             defaults -currentHost write NSGlobalDomain com.apple.trackpad.trackpadCornerClickBehavior -int 0' \
-        'Map "click or tap with two fingers" to the secondary click'
-
 }
 
 # ----------------------------------------------------------------------
@@ -407,14 +367,14 @@ set_ui_and_ux_preferences() {
     execute "defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true" \
         "Avoid creating '.DS_Store' files on network volumes"
 
-    execute 'defaults write com.apple.menuextra.battery ShowPercent -string "NO"' \
+    execute 'defaults write com.apple.menuextra.battery ShowPercent -string "YES"' \
         'Hide battery percentage from the menu bar'
 
     execute 'defaults write com.apple.LaunchServices LSQuarantine -bool false' \
         'Disable "Are you sure you want to open this application?" dialog'
 
-    # execute 'defaults write com.apple.loginwindow TALLogoutSavesState 0' \
-    #     'Disable "Reopen windows when logging back in"'
+    execute 'defaults write com.apple.loginwindow TALLogoutSavesState 0' \
+        'Disable "Reopen windows when logging back in"'
 
     execute 'defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true' \
         'Automatically quit the printer app once the print jobs are completed'
@@ -422,14 +382,14 @@ set_ui_and_ux_preferences() {
     execute 'defaults write com.apple.screencapture disable-shadow -bool true' \
         'Disable shadow in screenshots'
 
-    execute 'defaults write com.apple.screencapture location -string "$HOME/Desktop"' \
+    execute 'defaults write com.apple.screencapture location -string "$HOME/Downloads"' \
         'Save screenshots to the Desktop'
 
     execute 'defaults write com.apple.screencapture type -string "png"' \
         'Save screenshots as PNGs'
 
     execute 'defaults write com.apple.screensaver askForPassword -int 1 &&
-             defaults write com.apple.screensaver askForPasswordDelay -int 0'\
+             defaults write com.apple.screensaver askForPasswordDelay -int 10'\
         'Require password immediately after into sleep or screen saver mode'
 
     execute 'defaults write NSGlobalDomain AppleFontSmoothing -int 2' \
@@ -453,33 +413,19 @@ set_ui_and_ux_preferences() {
     execute 'defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true' \
         'Expand print panel by default'
 
-    execute 'sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "Laptop" &&
-             sudo scutil --set ComputerName "Laptop" &&
-             sudo scutil --set HostName "Laptop" &&
-             sudo scutil --set LocalHostName "Laptop"' \
-        'Set computer name'
-
-    execute "sudo systemsetup -setrestartfreeze on" \
-        "Restart automatically if the computer freezes"
-
-    execute 'sudo defaults write /Library/Preferences/com.apple.Bluetooth.plist ControllerPowerState 0 &&
-             sudo launchctl unload /System/Library/LaunchDaemons/com.apple.blued.plist &&
-             sudo launchctl load /System/Library/LaunchDaemons/com.apple.blued.plist' \
-        'Turn Bluetooth off'
-
     execute '   for domain in ~/Library/Preferences/ByHost/com.apple.systemuiserver.*; do
                     sudo defaults write "${domain}" dontAutoLoad -array \
                         "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
+                        "/System/Library/CoreServices/Menu Extras/Bluetooth.menu"
                         "/System/Library/CoreServices/Menu Extras/Volume.menu"
                 done && \
 
                 sudo defaults write com.apple.systemuiserver menuExtras -array \
-                    "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
                     "/System/Library/CoreServices/Menu Extras/AirPort.menu" \
                     "/System/Library/CoreServices/Menu Extras/Battery.menu" \
                     "/System/Library/CoreServices/Menu Extras/Clock.menu"
             ' \
-        'Hide Time Machine and Volume icons from the menu bar'
+        'Hide Time Machine Bluetooth and Volume icons from the menu bar'
 
 }
 
@@ -490,7 +436,6 @@ main() {
     declare -a PROCESSES_TO_TERMINATE=(
         "Dock"
         "Finder"
-        "Google Chrome Canary"
         "Google Chrome"
         "Maps"
         "Safari"
