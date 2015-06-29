@@ -154,7 +154,7 @@ get_git_repository_details() {
 set_prompts() {
 
     local black="" blue="" bold="" cyan="" green="" orange="" \
-          purple="" red="" reset="" white="" yellow=""
+          purple="" red="" reset="" white="" yellow="" lawn=""
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -177,7 +177,7 @@ set_prompts() {
         red=$(tput setaf 124)
         white=$(tput setaf 15)
         yellow=$(tput setaf 136)
-
+        lawn=$(tput setaf 10)
     else
 
         bold=""
@@ -192,6 +192,7 @@ set_prompts() {
         red="\e[1;31m"
         white="\e[1;37m"
         yellow="\e[1;33m"
+        lawn="\e[1;10m"
 
     fi
 
@@ -206,7 +207,6 @@ set_prompts() {
 
     PS1="\[\033]0;\w\007\]"         # Terminal title (set to the
                                     # current working directory)
-    PS1+="\[$bold\]"
     PS1+="\[$orange\]\u"            # Username
     PS1+="\[$white\]@"
     PS1+="\[$yellow\]\h"            # Host
@@ -214,7 +214,8 @@ set_prompts() {
     PS1+="\[$green\]\w"             # Working directory
     PS1+="\$(get_git_repository_details \"$white on $cyan\")"
     PS1+="\n"
-    PS1+="\[$reset$white\]\$ \[$reset\]"
+    PS1+="\[$bold\]"
+    PS1+="\[$reset$lawn\]λ \[$reset\]"
 
     export PS1
 

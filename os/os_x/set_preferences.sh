@@ -416,7 +416,7 @@ set_ui_and_ux_preferences() {
     execute '   for domain in ~/Library/Preferences/ByHost/com.apple.systemuiserver.*; do
                     sudo defaults write "${domain}" dontAutoLoad -array \
                         "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
-                        "/System/Library/CoreServices/Menu Extras/Bluetooth.menu"
+                        "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
                         "/System/Library/CoreServices/Menu Extras/Volume.menu"
                 done && \
 

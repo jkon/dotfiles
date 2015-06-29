@@ -39,10 +39,8 @@ declare -r -a HOMEBREW_CASKS=(
     "android-file-transfer"
     "atom"
     "dropbox"
-    "flash"
     "imageoptim"
     "licecap"
-    "lisanet-gimp"
     "macvim"
     "vlc"
     "alfred"
@@ -68,7 +66,7 @@ declare -r -a HOMEBREW_CASKS=(
     "spotify"
 )
 
-//TODO: Atom Packages
+# //TODO: Atom Packages
 
 # Homebrew Alternate Casks
 # https://github.com/caskroom/homebrew-versions
