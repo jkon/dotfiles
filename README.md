@@ -1,4 +1,4 @@
-# [Cătălin](https://github.com/alrra)’s dotfiles
+# [WilsonWC](https://github.com/wilsonwc)’s dotfiles
 
 These are the base dotfiles that I start with when I set up a
 new environment. For more specific local needs I use the `.local`
@@ -15,8 +15,8 @@ understand [what it does](dotfiles). Seriously, **DON'T**!)
 
 | OS | Snippet |
 |:---:|:---|
-| OS X | `bash -c "$(curl -LsS https://raw.github.com/alrra/dotfiles/master/dotfiles)"` |
-| Ubuntu | `bash -c "$(wget -qO - https://raw.github.com/alrra/dotfiles/master/dotfiles)"` |
+| OS X | `bash -c "$(curl -LsS https://raw.github.com/wilsonwc/dotfiles/master/dotfiles)"` |
+| Ubuntu | `bash -c "$(wget -qO - https://raw.github.com/wilsonwc/dotfiles/master/dotfiles)"` |
 
 That's it! :sparkles:
 
