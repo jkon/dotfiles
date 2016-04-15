@@ -1,9 +1,9 @@
 #!/bin/bash
 
-cd "$(dirname "${BASH_SOURCE}")" && source "utils.sh"
+cd "$(dirname "$BASH_SOURCE")" \
+    && source "utils.sh"
 
 declare -r -a NODE_VERSIONS=(
-    "iojs"
     "node"
 )
 
@@ -20,28 +20,34 @@ main() {
 export NVM_DIR="'$NVM_DIRECTORY'"
 [ -f "$NVM_DIR/nvm.sh" ] \
     && source "$NVM_DIR/nvm.sh"
+
+[ -f "$NVM_DIR/bash_completion" ] \
+    && source $NVM_DIR/bash_completion
 '
-    declare exitCode=0
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     # Check if `Git` is installed
-    if [ $(cmd_exists "git") -eq 1 ]; then
+
+    if ! cmd_exists "git"; then
         print_error "Git is required, please install it!\n"
         exit 1
     fi
 
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
     # Install `nvm` and add the necessary configs to `~/.bash.local`
+
     if [ ! -d "$NVM_DIRECTORY" ]; then
 
         git clone https://github.com/creationix/nvm.git "$NVM_DIRECTORY" &> /dev/null
-        exitCode=$?
-        print_result $exitCode "nvm"
+        print_result $? "nvm"
 
-        [ $exitCode -eq 0 ] \
-            && printf "%s" "$CONFIGS" >> "$HOME/.bash.local" \
-            && source "$HOME/.bash.local"
-        print_result $? "nvm (update ~/.bash.local)"
+        if [ $? -eq 0 ]; then
+            printf "%s" "$CONFIGS" >> "$HOME/.bash.local" \
+                && source "$HOME/.bash.local"
+            print_result $? "nvm (update ~/.bash.local)"
+        fi
 
     fi
 

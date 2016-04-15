@@ -11,12 +11,12 @@ To setup the dotfiles just run the appropriate snippet in the
 terminal:
 
 (:warning: **DO NOT** run the setup snippet if you don't fully
-understand [what it does](dotfiles). Seriously, **DON'T**!)
+understand [what it does](setup.sh). Seriously, **DON'T**!)
 
 | OS | Snippet |
 |:---:|:---|
-| OS X | `bash -c "$(curl -LsS https://raw.github.com/wilsonwc/dotfiles/master/dotfiles)"` |
-| Ubuntu | `bash -c "$(wget -qO - https://raw.github.com/wilsonwc/dotfiles/master/dotfiles)"` |
+| OS X | `bash -c "$(curl -LsS https://raw.github.com/wilsonwc/dotfiles/master/setup.sh)"` |
+| Ubuntu | `bash -c "$(wget -qO - https://raw.github.com/wilsonwc/dotfiles/master/setup.sh)"` |
 
 That's it! :sparkles:
 
@@ -30,21 +30,22 @@ The setup process will:
   [shell](shell), and
   [vim](vim) files
 * Install applications / command-line tools for
-  [OS X](os/os_x/install_applications.sh) /
-  [Ubuntu](os/ubuntu/install_applications.sh)
+  [OS X](os/os_x/installs/main.sh) /
+  [Ubuntu](os/ubuntu/installs/main.sh)
 * Set custom
-  [OS X](os/os_x/set_preferences.sh) /
-  [Ubuntu](os/ubuntu/set_preferences.sh) preferences
+  [OS X](os/os_x/preferences/main.sh) /
+  [Ubuntu](os/ubuntu/preferences/main.sh) preferences
 * Install [vim plugins](vim/vim/plugins)
 
 <table>
     <tbody>
+        <tr><td colspan="2">Setup process in action</tr></td>
         <tr>
             <td>
-                <img src="https://cloud.githubusercontent.com/assets/1223565/6079359/df4df582-ae0c-11e4-8643-db7c251284d6.gif" alt="Setup process on OS X" width="100%">
+                <img src="https://cloud.githubusercontent.com/assets/1223565/11821505/91e437be-a372-11e5-9500-025c316fe22c.gif" alt="Setup process on OS X" width="100%">
             </td>
             <td>
-                <img src="https://cloud.githubusercontent.com/assets/1223565/8397228/41ae6b28-1dcd-11e5-858c-a5cba394657d.gif" alt="Setup process on Ubuntu" width="100%">
+                <img src="https://cloud.githubusercontent.com/assets/1223565/12219151/086e5f92-b73f-11e5-9ecb-f4821981e06d.gif" alt="Setup process on Ubuntu" width="100%">
             </td>
         </tr>
     </tbody>
@@ -61,7 +62,7 @@ The setup process will:
         <tr><td colspan="2">Output for Git status</tr></td>
         <tr>
             <td>
-                <img src="https://cloud.githubusercontent.com/assets/1223565/8397253/3bbaa172-1dce-11e5-954c-bca125d21850.png" alt="Output for Git status on OS X" width="100%">
+                <img src="https://cloud.githubusercontent.com/assets/1223565/10561038/f9f11a28-7525-11e5-8e1d-a304ad3557f9.png" alt="Output for Git status on OS X" width="100%">
             </td>
             <td>
                 <img src="https://cloud.githubusercontent.com/assets/1223565/8397636/3708d218-1ddb-11e5-9d40-21c6871271b9.png" alt="Output for Git status on Ubuntu" width="100%">
@@ -75,42 +76,26 @@ The setup process will:
         <tr><td colspan="2">Output for Git log</tr></td>
         <tr>
             <td>
-                <img src="https://cloud.githubusercontent.com/assets/1223565/8397255/504bef92-1dce-11e5-8f2b-714a0e57618b.png" alt="Output for Git status on OS X" width="100%">
+                <img src="https://cloud.githubusercontent.com/assets/1223565/10560966/e4ec08a6-7523-11e5-8941-4e12f6550a63.png" alt="Output for Git status on OS X" width="100%">
             </td>
             <td>
-                <img src="https://cloud.githubusercontent.com/assets/1223565/8397637/40828b68-1ddb-11e5-94b6-4dd7aab105d8.png" alt="Output for Git log on Ubuntu" width="100%">
-            </td>
-        </tr>
-    </tbody>
-</table>
-
-
-##### tmux
-
-<table>
-    <tbody>
-        <tr>
-            <td>
-                <img src="https://cloud.githubusercontent.com/assets/1223565/8397259/87914cea-1dce-11e5-8cf8-f01abf00bd1e.png" alt="tmux on OS X" width="100%">
-            </td>
-            <td>
-                <img src="https://cloud.githubusercontent.com/assets/1223565/8397811/fe821aac-1de0-11e5-8d9c-cb08f2b409df.png" alt="tmux on Ubuntu" width="100%">
+                <img src="https://cloud.githubusercontent.com/assets/1223565/10560955/4b5e1300-7523-11e5-9e96-95ea67de9474.png" alt="Output for Git log on Ubuntu" width="100%">
             </td>
         </tr>
     </tbody>
 </table>
 
 
-##### vim
+##### tmux + vim
 
 <table>
     <tbody>
         <tr>
             <td>
-               <img src="https://cloud.githubusercontent.com/assets/1223565/8397632/20ae8922-1ddb-11e5-8a68-d61c8ab1b404.png" alt="MacVim" width="100%">
+                <img src="https://cloud.githubusercontent.com/assets/1223565/10561007/498e1212-7525-11e5-8252-81503b3d6184.png" alt="tmux and vim on OS X" width="100%">
             </td>
             <td>
-                <img src="https://cloud.githubusercontent.com/assets/1223565/8397645/54e1b99e-1ddb-11e5-80e1-8de3bfc19a68.png" alt="Gnome Vim" width="100%">
+                <img src="https://cloud.githubusercontent.com/assets/1223565/10560956/557ca2de-7523-11e5-9000-fc1e189a95f5.png" alt="tmux and vim on Ubuntu" width="100%">
             </td>
         </tr>
     </tbody>
@@ -167,6 +152,7 @@ as the `git` user credentials, e.g.:
 [user]
     name = Cătălin Mariș
     email = alrra@example.com
+    signingkey = XXXXXXXX
 ```
 
 #### `~/.vimrc.local`
@@ -183,13 +169,13 @@ Same as `~/.vimrc.local` but for `~/.gvimrc`.
 
 If you decide to fork this project, don't forget to substitute my
 username with your own in the [setup snippets](#setup) and [in the
-`dotfiles` script](https://github.com/alrra/dotfiles/blob/5b524ba9ca07b66db1955d18a2fb66bf4b48f677/dotfiles#L3).
+`setup` script](https://github.com/alrra/dotfiles/blob/3d614ac304ad072fba0001111f22202415ad7ffc/setup.sh#L3).
 
 
 ## Update
 
-To update the dotfiles you can either run the [`dotfiles`
-script](dotfiles) or, if you want to just update one particular part,
+To update the dotfiles you can either run the [`setup`
+script](setup.sh) or, if you want to just update one particular part,
 run the appropriate [`os` script](os).
 
 

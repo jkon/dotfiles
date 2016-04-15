@@ -1,6 +1,7 @@
 #!/bin/bash
 
-cd "$(dirname "${BASH_SOURCE}")" && source "utils.sh"
+cd "$(dirname "$BASH_SOURCE")" \
+    && source "utils.sh"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -9,9 +10,9 @@ main() {
     declare -r OS="$(get_os)"
 
     if [ "$OS" == "osx" ]; then
-        ./os_x/set_preferences.sh
+        ./os_x/preferences/main.sh
     elif [ "$OS" == "ubuntu" ]; then
-        ./ubuntu/set_preferences.sh
+        ./ubuntu/preferences/main.sh
     fi
 
 }

@@ -21,7 +21,7 @@
 
 declare -r -a CURL_DEFAULT_OPTIONS=(
     --connect-timeout 30
-    --header "Accept-Encoding: gzip, deflate, sdch"
+    --header "Accept-Encoding: br, gzip, deflate, lzma, sdch"
     --header "Cache-Control: no-cache" # Prevent intermediate proxies
                                        # from caching the response
 
@@ -50,7 +50,7 @@ check_for_sdch() {
 
     # Check if the server advertised any dictionaries
     dicts="$( printf "%s" "$currentHeaders" |
-              grep -i 'Get-Dictionary:' |
+              grep -i "Get-Dictionary:" |
               cut -d':' -f2 |
               sed s/,/\ /g )"
 
@@ -131,7 +131,7 @@ get_content_encoding() {
 
             # Get the value of the `Content-Encoding` header
             encoding="$( printf "%s" "$currentHeaders" |
-                         grep -i 'Content-Encoding:' |
+                         grep -i "Content-Encoding:" |
                          cut -d' ' -f2 |
                          tr "\r" "," |
                          tr -d "\n" |
@@ -151,7 +151,7 @@ get_content_encoding() {
             # Get the next URL from the series of redirects
             tmp="$url"
             url="$( printf "%s" "$currentHeaders" |
-                    grep -i 'Location' |
+                    grep -i "Location" |
                     sed -e 's/Location://' |
                     sed 's/^ *//' |
                     tr -d '\r' )"
@@ -168,10 +168,13 @@ get_content_encoding() {
 main() {
 
     # Check if `cURL` is installed
-    if [ ! -x "$(command -v "curl")" ]; then
+
+    if ! command -v "curl" &> /dev/null; then
         printf "cURL is required, please install it!\n"
-        exit;
+        exit 1
     fi
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     while [ $# -ne 0 ]; do
         get_content_encoding "$1"

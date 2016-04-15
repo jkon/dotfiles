@@ -12,68 +12,12 @@ declare dotfilesDirectory="$HOME/dotfiles"
 # | Helper Functions                                                   |
 # ----------------------------------------------------------------------
 
-check_os() {
-
-    declare -r OS_NAME="$(uname -s)"
-
-    # Check if the OS is OS X and it is above a certain version
-    if [ "$OS_NAME" == "Darwin" ]; then
-        if [ $(compare_versions "$(sw_vers -productVersion)" "10.10") == "<" ]; then
-            printf "Sorry, this script is intended only for OS X 10.10.0+."
-            return 1
-        else
-            return 0
-        fi
-
-    # Check if the OS is Ubuntu
-    else
-        if [ "$OS_NAME" != "Linux" ] || [ ! -e "/etc/lsb-release" ]; then
-            printf "Sorry, this script is intended only for OS X and Ubuntu!"
-            return 1
-        else
-            return 0
-        fi
-    fi
-
-}
-
-compare_versions() {
-
-    declare -a v1=(${1//./ })
-    declare -a v2=(${2//./ })
-    local i=""
-
-    # Fill empty positions in v1 with zeros
-    for (( i=${#v1[@]}; i<${#v2[@]}; i++ )); do
-        v1[i]=0
-    done
-
-    for (( i=0; i<${#v1[@]}; i++ )); do
-
-        # Fill empty positions in v2 with zeros
-        if [[ -z ${v2[i]} ]]; then
-            v2[i]=0
-        fi
-
-        if (( 10#${v1[i]} > 10#${v2[i]} )); then
-            printf ">"
-        fi
-
-        if (( 10#${v1[i]} < 10#${v2[i]} )); then
-            printf "<"
-        fi
-
-    done
-
-    printf "="
-}
-
 download() {
 
     local url="$1"
     local output="$2"
 
-    if [ -x "$(command -v curl)" ]; then
+    if command -v "curl" &> /dev/null; then
 
         curl -LsSo "$output" "$url" &> /dev/null
         #     │││└─ write output to file
@@ -81,17 +25,18 @@ download() {
         #     │└─ don't show the progress meter
         #     └─ follow redirects
 
-    elif [ -x "$(command -v wget)" ]; then
+        return $?
+
+    elif command -v "wget" &> /dev/null; then
 
         wget -qO "$output" "$url" &> /dev/null
         #     │└─ write output to file
         #     └─ don't show output
 
-    else
-        return 1
+        return $?
     fi
 
-    return $?
+    return 1
 
 }
 
@@ -103,12 +48,12 @@ download_dotfiles() {
 
     download "$DOTFILES_TARBALL_URL" "$tmpFile"
     print_result $? "Download archive" "true"
+    printf "\n"
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    printf "\n"
-
     ask_for_confirmation "Do you want to store the dotfiles in '$dotfilesDirectory'?"
+
     if ! answer_is_yes; then
         dotfilesDirectory=""
         while [ -z "$dotfilesDirectory" ]; do
@@ -162,12 +107,12 @@ download_utils() {
 
     local tmpFile="$(mktemp /tmp/XXXXX)"
 
-    download "$DOTFILES_UTILS_URL" "$tmpFile"
+    download "$DOTFILES_UTILS_URL" "$tmpFile" \
+        && source "$tmpFile" \
+        && rm -rf "$tmpFile" \
+        && return 0
 
-    [ $? -ne 0 ] && exit 1
-
-    source "$tmpFile"
-    rm -rf "$tmpFile"
+   return 1
 
 }
 
@@ -176,13 +121,82 @@ extract() {
     local archive="$1"
     local outputDir="$2"
 
-    if [ -x "$(command -v tar)" ]; then
+    if command -v "tar" &> /dev/null; then
         tar -zxf "$archive" --strip-components 1 -C "$outputDir"
-    else
-        return 1
+        return $?
     fi
 
-    return $?
+    return 1
+
+}
+
+is_supported_version() {
+
+    declare -a v1=(${1//./ })
+    declare -a v2=(${2//./ })
+    local i=""
+
+    # Fill empty positions in v1 with zeros
+    for (( i=${#v1[@]}; i<${#v2[@]}; i++ )); do
+        v1[i]=0
+    done
+
+    for (( i=0; i<${#v1[@]}; i++ )); do
+
+        # Fill empty positions in v2 with zeros
+        if [[ -z ${v2[i]} ]]; then
+            v2[i]=0
+        fi
+
+        if (( 10#${v1[i]} < 10#${v2[i]} )); then
+            return 1
+        fi
+
+    done
+
+}
+
+verify_os() {
+
+    declare -r MINIMUM_OS_X_VERSION="10.10"
+    declare -r MINIMUM_UBUNTU_VERSION="14.04"
+    declare -r OS_NAME="$(uname -s)"
+
+    declare OS_VERSION=""
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # Check if the OS is `OS X` and
+    # it's above the required version
+
+    if [ "$OS_NAME" == "Darwin" ]; then
+
+        OS_VERSION="$(sw_vers -productVersion)"
+
+        is_supported_version "$OS_VERSION" "$MINIMUM_OS_X_VERSION" \
+            && return 0 \
+            || printf "Sorry, this script is intended only for OS X $MINIMUM_OS_X_VERSION+"
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # Check if the OS is `Ubuntu` and
+    # it's above the required version
+
+    elif [ "$OS_NAME" == "Linux" ] && [ -e "/etc/lsb-release" ]; then
+
+        OS_VERSION="$(lsb_release -d | cut -f2 | cut -d' ' -f2)"
+
+        is_supported_version "$OS_VERSION" "$MINIMUM_UBUNTU_VERSION" \
+            && return 0 \
+            || printf "Sorry, this script is intended only for Ubuntu $MINIMUM_UBUNTU_VERSION+"
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    else
+        printf "Sorry, this script is intended only for OS X and Ubuntu!"
+    fi
+
+    return 1
 
 }
 
@@ -192,22 +206,40 @@ extract() {
 
 main() {
 
-    # Ensure the OS is OS X or Ubuntu
-    check_os || exit;
+    # Ensure the OS is supported and
+    # it's above the required version
 
-    # Ensure that the following actions are made
-    # relative to the dotfiles directory root
+    verify_os || exit 1
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # Ensure that the following actions
+    # are made relative to this file's path
+    #
     # http://mywiki.wooledge.org/BashFAQ/028
-    cd "$(dirname "${BASH_SOURCE}")";
 
-    download_utils
+    cd "$(dirname "$BASH_SOURCE")"
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # Load utils
+
+    if [ -x "os/utils.sh" ]; then
+        source "os/utils.sh" || exit 1
+    else
+        download_utils || exit 1
+    fi
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
     ask_for_sudo
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     # Setup the `dotfiles` if needed
-    if [ $(cmd_exists "git") -ne 0 ] || \
-       [ "$(git config --get remote.origin.url)" = *"$GITHUB_REPOSITORY" ]; then
+
+    if ! cmd_exists "git" \
+        || [ "$(git config --get remote.origin.url)" != "$DOTFILES_ORIGIN" ]; then
 
         print_info "Download and extract archive"
         download_dotfiles
@@ -238,11 +270,15 @@ main() {
     printf "\n"
 
     if answer_is_yes; then
+
         ./os/install_applications.sh
-        printf "\n"
+        print_in_green "\n  ---\n\n"
+
         ./os/install_node_versions.sh
-        printf "\n"
+        print_in_green "\n  ---\n\n"
+
         ./os/install_npm_packages.sh
+
     fi
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -258,16 +294,18 @@ main() {
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    if [ $(cmd_exists "git") -eq 0 ]; then
+    if cmd_exists "git"; then
 
         if [ "$(git config --get remote.origin.url)" != "$DOTFILES_ORIGIN" ]; then
             print_info "Initialize Git repository"
             ./os/initialize_git_repository.sh "$DOTFILES_ORIGIN"
         fi
 
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
         print_info "Update content"
 
-        ask_for_confirmation "Do you want to update the content from the 'dotfiles' directory?"
+        ask_for_confirmation "Do you want to update the content from the "dotfiles" directory?"
         printf "\n"
 
         if answer_is_yes; then
@@ -278,11 +316,11 @@ main() {
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    if [ $(cmd_exists "vim") -eq 0 ]; then
+    if cmd_exists "vim"; then
 
-        print_info "Install Vim plugins"
+        print_info "Install/Update Vim plugins"
 
-        ask_for_confirmation "Do you want to install the Vim plugins?"
+        ask_for_confirmation "Do you want to install/update the Vim plugins?"
         printf "\n"
 
         if answer_is_yes; then
@@ -299,7 +337,7 @@ main() {
     printf "\n"
 
     if answer_is_yes; then
-        ./os/restart_computer.sh
+        ./os/restart.sh
     fi
 
 }

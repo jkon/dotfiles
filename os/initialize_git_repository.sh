@@ -1,6 +1,7 @@
 #!/bin/bash
 
-cd "$(dirname "${BASH_SOURCE}")" && source "utils.sh"
+cd "$(dirname "$BASH_SOURCE")" \
+    && source "utils.sh"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -8,7 +9,14 @@ main() {
 
     declare -r GIT_ORIGIN="$1"
 
-    if [ -n "$GIT_ORIGIN" ] && ! is_git_repository; then
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    [ -z "$GIT_ORIGIN" ] \
+        && print_error "Please provide a URL for the Git origin"
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    if ! is_git_repository; then
 
         # Run the following Git commands in the root of
         # the dotfiles directory, not in the `os/` directory
