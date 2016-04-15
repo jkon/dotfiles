@@ -1,3 +1,4 @@
+[alias]
 
     a   = commit --amend
     br  = branch
@@ -104,7 +105,7 @@
     attributesfile = ~/.gitattributes
     autocrlf = input
     editor = vim
-	excludesfile = /Users/rwilson/.gitignore
+    excludesfile = ~/.gitignore
 
 [commit]
 
