@@ -1,9 +1,11 @@
-# [WilsonWC](https://github.com/wilsonwc)’s dotfiles
+# jkon[jkon](https://github.com/jkon)'s dotfiles
 
 These are the base dotfiles that I start with when I set up a
 new environment. For more specific local needs I use the `.local`
 files described in the [`Local Settings`](#local-settings) section.
 
+### Note
+this repo was forked from (https://github.com/wilsonwc/dotfiles) which installs more tools. I didn't want everything on the list, so I forked and commented out some things
 
 ## Setup
 
