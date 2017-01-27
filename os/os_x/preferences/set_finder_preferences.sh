@@ -15,8 +15,8 @@ set_preferences() {
     execute "defaults write com.apple.finder _FXShowPosixPathInTitle -bool true" \
         "Use full POSIX path as window title"
 
-    execute "defaults write com.apple.finder DisableAllAnimations -bool true" \
-        "Disable all animations"
+    #execute "defaults write com.apple.finder DisableAllAnimations -bool true" \
+     #   "Disable all animations"
 
     execute "defaults write com.apple.finder WarnOnEmptyTrash -bool false" \
         "Disable the warning before emptying the Trash"
